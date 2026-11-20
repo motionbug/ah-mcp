@@ -16,7 +16,7 @@ Working notes for getting ah-mcp running in Hermes Agent and connected to the [m
 
 ## To do
 
-- [ ] Apply restock corrections in Hermes: add `salami: 3` (AH Pizza salami is 125 g topping salami), set `chicken breast` to 3 (800 g pack); update both rows in the mapping file.
+- [x] 2026-11-20: Restock corrections applied and verified: `salami: 3` added (AH Pizza salami = 125 g topping salami), `chicken breast` set to 3 (800 g pack), both mapping rows updated.
 - [ ] Set up recipes in meal-manager (from fridge + frequent AH items), using the fridge's English ingredient names.
 - [ ] Test workflow 2 (missing items → AH shopping list).
 - [ ] Test workflow 3 (bonus-aware planning).
@@ -60,4 +60,4 @@ Working notes for getting ah-mcp running in Hermes Agent and connected to the [m
 
 ## Log
 
-- **2026-11-20:** Found and fixed the login failure; logged in with the console code. Forked to motionbug/ah-mcp, `hermes` branch. Widened the Hermes AH tool list, wrote the ah-meal-bridge skill, added `hermes/` docs. First restock test from a delivery order: fridge 22 → 39 items, verified; mapping file seeded. Skill updated to 0.2.0 from what the test showed.
+- **2026-11-20:** Found and fixed the login failure; logged in with the console code. Forked to motionbug/ah-mcp, `hermes` branch. Widened the Hermes AH tool list, wrote the ah-meal-bridge skill, added `hermes/` docs. First restock test from a delivery order: fridge 22 → 39 items, verified; mapping file seeded. Corrections (salami, chicken) applied → 40 items, verified. Skill updated to 0.2.0 from what the test showed.
