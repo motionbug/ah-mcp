@@ -1,7 +1,7 @@
 ---
 name: ah-meal-bridge
 description: "Connect meal_manager (recipes, fridge, what to cook) with Albert Heijn (receipts, shopping list, bonus deals)."
-version: 0.2.0
+version: 0.2.1
 author: motionbug
 license: MIT
 platforms: [linux, macos, windows]
@@ -68,6 +68,7 @@ Triggers: "what can I cook this week that's on bonus", "use the bonus deals".
 
 - Confirm before every write: `update_fridge_inventory` and `ah_add_to_shopping_list` / `ah_remove_from_shopping_list`.
 - Batch: one bulk search, one shopping-list add, one fridge update per workflow run.
+- meal_manager tools are local plugin tools: Hermes accepts only **one per tool call**. Never group several (e.g. 14 `set_dish_instructions`) into one call; issue them one after another. Use the batch tools it offers (`add_dishes_batch`) where they exist.
 - Suggestions and rankings come only from meal_manager tool output; product facts (price, bonus, title) only from AH tool output.
 - If an AH tool reports `not_authenticated`, call `ah_login` once with no arguments. If the browser login ends on a blank page, ask the user for the `appie://login-exit?code=...` line from the browser console and pass it as `code`.
 - Not available on purpose: emptying the cart or list, editing the online order. If asked, say the user can do it in the AH app.

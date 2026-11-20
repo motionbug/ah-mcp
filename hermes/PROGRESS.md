@@ -8,16 +8,17 @@ Working notes for getting ah-mcp running in Hermes Agent and connected to the [m
 |---|---|
 | ah-mcp in Hermes (stdio) | ✅ working, 22 tools exposed |
 | AH login | ✅ logged in (via console-code fallback); redirect fix not yet proven by a full browser login |
-| ah-meal-bridge skill | v0.2.0 installed |
+| ah-meal-bridge skill | v0.2.1 installed |
 | Workflow 1: AH purchase → fridge | ✅ tested once on a delivery order |
 | Workflow 2: missing items → AH list | ⏳ not tested (needs recipes) |
 | Workflow 3: bonus-aware planning | ⏳ not tested (needs recipes) |
-| meal-manager recipes | ⏳ 14-dish set researched, not yet added (blocker for workflows 2 and 3) |
+| meal-manager recipes | ✅ 14 dishes added and verified |
 
 ## To do
 
 - [x] 2026-11-20: Restock corrections applied and verified: `salami: 3` added (AH Pizza salami = 125 g topping salami), `chicken breast` set to 3 (800 g pack), both mapping rows updated.
-- [ ] Add the 14-dish family set ([recipes/family-set-v1.md](recipes/family-set-v1.md)) to meal-manager (prompt prepared: one `add_dishes_batch` + per-dish kid notes via `set_dish_instructions`); then check that `get_meal_suggestions` shows traybake, baked feta pasta, minestrone and sushi bowl as cookable.
+- [x] 2026-11-20: 14-dish family set ([recipes/family-set-v1.md](recipes/family-set-v1.md)) added to meal-manager and verified against the list; 4 cookable now (traybake, baked feta pasta, minestrone, sushi bowl).
+- [ ] Set the missing kid note on "bean cheese quesadillas".
 - [ ] Stock-take of cupboards/pantry from photos; add staples (count `null`) and dry goods to the fridge.
 - [ ] Test workflow 2 (missing items → AH shopping list).
 - [ ] Test workflow 3 (bonus-aware planning).
@@ -37,6 +38,7 @@ Working notes for getting ah-mcp running in Hermes Agent and connected to the [m
 
 ## Findings
 
+- **2026-11-20: Hermes allows only one local plugin tool per tool call.** Batching 14 `set_dish_instructions` failed with "tool_call takes exactly one entry for local tools"; only `connectors__` (MCP) tools can be grouped. Added to the skill rules.
 - **2026-11-20: Recipe research** (3 research agents): 14 family dinners across Dutch, Mediterranean, Asian and Tex-Mex, mild, ≤45 min, with essentials kept to 2–4 core items. Picky-eater approach with the best evidence: no pressure, one family meal plus a "safe food" (cottage cheese, plain pasta) rather than separate meals. Cottage cheese works as a standing shopping-list item, not a recipe ingredient. Allerhande pages block automated fetching, so their details came from search snippets.
 - **2026-11-20: Delivery order lines are clean:** product_id, full product name, quantity, price. No pack size.
 - **2026-11-20: Pack sizes come from search:** `ah_search_products_bulk` with the exact title returns `unit` (`1 kg`, `800 g`, `2 stuks`) under the same id.
