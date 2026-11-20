@@ -13,6 +13,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -335,11 +336,14 @@ func rewriteOAuthResponse(resp *http.Response, localOrigin, targetHost string) e
 		}
 	}
 
-	// Only rewrite bodies for text content types
+	// Only rewrite bodies for text content types. text/x-component is the
+	// Next.js RSC payload: after login, client-side navigation to /ingelogd
+	// receives the appie:// redirect inside it as a NEXT_REDIRECT digest.
 	ct := resp.Header.Get("Content-Type")
 	if !strings.Contains(ct, "text/html") &&
 		!strings.Contains(ct, "javascript") &&
-		!strings.Contains(ct, "json") {
+		!strings.Contains(ct, "json") &&
+		!strings.Contains(ct, "text/x-component") {
 		return nil
 	}
 
@@ -352,6 +356,7 @@ func rewriteOAuthResponse(resp *http.Response, localOrigin, targetHost string) e
 
 	resp.Body = io.NopCloser(bytes.NewReader(body))
 	resp.ContentLength = int64(len(body))
+	resp.Header.Set("Content-Length", strconv.Itoa(len(body)))
 	resp.Header.Del("Content-Encoding")
 	return nil
 }

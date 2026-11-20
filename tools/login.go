@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"runtime"
+	"strings"
 	"sync"
 
 	appie "github.com/gwillem/appie-go"
@@ -49,6 +50,8 @@ type Deps struct {
 	IsAuthenticated func() bool
 	// StartOAuthFlow starts the proxy and returns (loginURL, doneChan, err).
 	StartOAuthFlow func(ctx context.Context) (string, <-chan error, error)
+	// ExchangeCode exchanges an auth code for tokens and saves them.
+	ExchangeCode func(ctx context.Context, code string) error
 	// RefreshIfNeeded refreshes the access token if it is close to expiry.
 	RefreshIfNeeded func(ctx context.Context) error
 	// Server is the MCP server instance (kept for future use).
@@ -86,12 +89,35 @@ func RegisterLoginTool(s *server.MCPServer, deps Deps) {
 			"Log in to Albert Heijn. "+
 				"Local mode: opens your browser automatically and waits — returns success once you log in (single call). "+
 				"Remote mode: returns a URL to open manually, then call ah_login again to confirm. "+
-				"Already authenticated? Returns your name immediately.",
+				"Already authenticated? Returns your name immediately. "+
+				"Fallback: if the browser ends on a blank page and the console shows "+
+				"\"Failed to launch 'appie://login-exit?code=...'\", pass that URL or code as `code`.",
+		),
+		mcp.WithString("code",
+			mcp.Description("Optional auth code, or the full appie://login-exit?code=... URL, to exchange directly for tokens"),
 		),
 	)
 	s.AddTool(tool, func(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+		if code := parseAuthCode(req.GetString("code", "")); code != "" {
+			if err := deps.ExchangeCode(ctx, code); err != nil {
+				return errResult(fmt.Sprintf("Login failed: %v", err)), nil
+			}
+			return loginSuccess(ctx, deps)
+		}
 		return handleLogin(ctx, deps)
 	})
+}
+
+// parseAuthCode accepts a bare code or an appie://login-exit?code=... URL.
+func parseAuthCode(s string) string {
+	s = strings.TrimSpace(s)
+	if i := strings.Index(s, "code="); i >= 0 {
+		s = s[i+len("code="):]
+		if end := strings.IndexAny(s, "&'\" "); end >= 0 {
+			s = s[:end]
+		}
+	}
+	return s
 }
 
 func registerLogout(s *server.MCPServer, deps Deps) {
@@ -195,10 +221,12 @@ func handleLogin(ctx context.Context, deps Deps) (*mcp.CallToolResult, error) {
 			}
 			return loginSuccess(ctx, deps)
 		case <-ctx.Done():
-			oauthFlow.Lock()
-			oauthFlow.active = false
-			oauthFlow.Unlock()
-			return errResult("Login cancelled (context deadline exceeded)."), nil
+			// Leave the flow active: the proxy keeps listening until it times out,
+			// so the next ah_login call must check it rather than rebind the port.
+			return errResult(fmt.Sprintf(
+				"Login call was cancelled, but the login page is still open:\n\n%s\n\nFinish logging in, then call ah_login again.",
+				loginURL,
+			)), nil
 		}
 	}
 
