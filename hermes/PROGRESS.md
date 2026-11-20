@@ -12,12 +12,13 @@ Working notes for getting ah-mcp running in Hermes Agent and connected to the [m
 | Workflow 1: AH purchase → fridge | ✅ tested once on a delivery order |
 | Workflow 2: missing items → AH list | ⏳ not tested (needs recipes) |
 | Workflow 3: bonus-aware planning | ⏳ not tested (needs recipes) |
-| meal-manager recipes | ❌ none yet (blocker for workflows 2 and 3) |
+| meal-manager recipes | ⏳ 14-dish set researched, not yet added (blocker for workflows 2 and 3) |
 
 ## To do
 
 - [x] 2026-11-20: Restock corrections applied and verified: `salami: 3` added (AH Pizza salami = 125 g topping salami), `chicken breast` set to 3 (800 g pack), both mapping rows updated.
-- [ ] Set up recipes in meal-manager (from fridge + frequent AH items), using the fridge's English ingredient names.
+- [ ] Add the 14-dish family set to meal-manager (prompt prepared: one `add_dishes_batch` + per-dish kid notes via `set_dish_instructions`); then check that `get_meal_suggestions` shows traybake, baked feta pasta, minestrone and sushi bowl as cookable.
+- [ ] Stock-take of cupboards/pantry from photos; add staples (count `null`) and dry goods to the fridge.
 - [ ] Test workflow 2 (missing items → AH shopping list).
 - [ ] Test workflow 3 (bonus-aware planning).
 - [ ] Test workflow 1 on an in-store receipt (unknown whether receipt lines have readable names and product ids).
@@ -36,6 +37,7 @@ Working notes for getting ah-mcp running in Hermes Agent and connected to the [m
 
 ## Findings
 
+- **2026-11-20: Recipe research** (3 research agents): 14 family dinners across Dutch, Mediterranean, Asian and Tex-Mex, mild, ≤45 min, with essentials kept to 2–4 core items. Picky-eater approach with the best evidence: no pressure, one family meal plus a "safe food" (cottage cheese, plain pasta) rather than separate meals. Cottage cheese works as a standing shopping-list item, not a recipe ingredient. Allerhande pages block automated fetching, so their details came from search snippets.
 - **2026-11-20: Delivery order lines are clean:** product_id, full product name, quantity, price. No pack size.
 - **2026-11-20: Pack sizes come from search:** `ah_search_products_bulk` with the exact title returns `unit` (`1 kg`, `800 g`, `2 stuks`) under the same id.
 - **2026-11-20: `ah_get_product` / `ah_get_products_bulk` return 404** for valid ids (e.g. 613305, 531825, 400699).
@@ -60,4 +62,5 @@ Working notes for getting ah-mcp running in Hermes Agent and connected to the [m
 
 ## Log
 
+- **2026-11-20 (later):** Researched and shortlisted 14 family dinners; Hermes prompt ready to add them. Next: photo stock-take of cupboards.
 - **2026-11-20:** Found and fixed the login failure; logged in with the console code. Forked to motionbug/ah-mcp, `hermes` branch. Widened the Hermes AH tool list, wrote the ah-meal-bridge skill, added `hermes/` docs. First restock test from a delivery order: fridge 22 → 39 items, verified; mapping file seeded. Corrections (salami, chicken) applied → 40 items, verified. Skill updated to 0.2.0 from what the test showed.
