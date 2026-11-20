@@ -56,6 +56,7 @@ Authentication is handled entirely through a reverse-proxy OAuth flow — no tok
 | Claude Desktop | stdio | ✅ tested |
 | Claude Desktop | Streamable HTTP | ✅ tested |
 | Claude.ai (web) | Streamable HTTP | ✅ tested |
+| Hermes Agent | stdio | ✅ tested ([setup guide](hermes/README.md)) |
 
 ## Quick start (pre-built binary)
 
@@ -193,6 +194,20 @@ Add to your MCP config (usually `~/.codeium/windsurf/mcp_config.json` or `~/.cur
 }
 ```
 
+### Hermes Agent — stdio
+
+Add to `~/.hermes/config.yaml`, then run `/reload-mcp`:
+
+```yaml
+mcp_servers:
+  ah:
+    command: "/path/to/ah-mcp"
+    args: ["--transport", "stdio"]
+    timeout: 330   # ah_login waits up to 5 minutes for the browser login
+```
+
+See [hermes/README.md](hermes/README.md) for the full guide: a tool filter, login tips, and an optional skill that connects ah-mcp to the [meal-manager](https://github.com/sergiparpal/meal-manager) plugin.
+
 ## Remote server deployment
 
 ### systemd setup
@@ -230,7 +245,7 @@ Tokens are stored automatically at `/home/ah-mcp/.config/ah-mcp/tokens.json` —
 
 | Tool | Description |
 |---|---|
-| `ah_login` | Log in via browser OAuth. First call returns a URL; call again after completing login. |
+| `ah_login` | Log in via browser OAuth. Local mode opens the browser and waits; remote mode returns a URL, then call again after completing login. Optional `code`: an auth code or `appie://login-exit?code=…` URL to exchange directly (see Troubleshooting). |
 | `ah_logout` | Delete stored tokens to log out or switch accounts. |
 
 ### Products
@@ -302,6 +317,9 @@ Change via `AH_CALLBACK_PORT` or `AH_MCP_PORT` in your `.env`.
 
 **Login timeout after 5 minutes**
 The OAuth flow timed out. Call `ah_login` again and complete the browser flow faster.
+
+**Blank page after logging in in the browser**
+If the browser console shows `Failed to launch 'appie://login-exit?code=…'`, the redirect wasn't caught by the local proxy. Copy that URL and call `ah_login` with it as `code`; the code is exchanged directly. Codes are short-lived, so do it right away.
 
 **Token issues / expired session**
 Call `ah_logout` then `ah_login`. Or delete `tokens.json` manually:

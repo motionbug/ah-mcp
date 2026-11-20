@@ -1,0 +1,41 @@
+# Merge this block into ~/.hermes/config.yaml (under the existing top-level
+# `mcp_servers:` key if you already have one), then run /reload-mcp in Hermes.
+
+mcp_servers:
+  ah:
+    command: "/Users/you/.local/bin/ah-mcp"   # absolute path to the binary
+    args: ["--transport", "stdio"]
+    # ah_login blocks while you log in in the browser (up to 5 minutes), so
+    # keep the tool timeout above that.
+    timeout: 330
+    tools:
+      # Read-only + shopping-list staging, as used by the ah-meal-bridge skill.
+      # Deliberately left out (they change the real cart/order or wipe lists):
+      # ah_clear_cart, ah_clear_shopping_list, ah_shopping_list_to_order,
+      # ah_update_cart_item, ah_remove_from_cart, ah_update_order_items,
+      # ah_reopen_order, ah_revert_order.
+      # Remove the whole `tools:` block to expose every tool.
+      include:
+        - ah_login
+        - ah_search_products
+        - ah_search_products_bulk
+        - ah_search_products_filtered
+        - ah_get_product
+        - ah_get_products_bulk
+        - ah_get_bonus_offers
+        - ah_get_bonus_group_products
+        - ah_get_last_chance_items
+        - ah_search_stores
+        - ah_get_frequent_items
+        - ah_get_receipts
+        - ah_get_receipt_details
+        - ah_get_past_orders
+        - ah_get_order_history
+        - ah_get_order_details
+        - ah_get_shopping_list
+        - ah_add_to_shopping_list
+        - ah_add_free_text_to_shopping_list
+        - ah_remove_from_shopping_list
+        - ah_get_cart
+        - ah_get_cart_summary
+    enabled: true
