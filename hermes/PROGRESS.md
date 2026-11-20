@@ -17,7 +17,7 @@ Working notes for getting ah-mcp running in Hermes Agent and connected to the [m
 ## To do
 
 - [x] 2026-11-20: Restock corrections applied and verified: `salami: 3` added (AH Pizza salami = 125 g topping salami), `chicken breast` set to 3 (800 g pack), both mapping rows updated.
-- [ ] Add the 14-dish family set to meal-manager (prompt prepared: one `add_dishes_batch` + per-dish kid notes via `set_dish_instructions`); then check that `get_meal_suggestions` shows traybake, baked feta pasta, minestrone and sushi bowl as cookable.
+- [ ] Add the 14-dish family set ([recipes/family-set-v1.md](recipes/family-set-v1.md)) to meal-manager (prompt prepared: one `add_dishes_batch` + per-dish kid notes via `set_dish_instructions`); then check that `get_meal_suggestions` shows traybake, baked feta pasta, minestrone and sushi bowl as cookable.
 - [ ] Stock-take of cupboards/pantry from photos; add staples (count `null`) and dry goods to the fridge.
 - [ ] Test workflow 2 (missing items → AH shopping list).
 - [ ] Test workflow 3 (bonus-aware planning).
