@@ -4,6 +4,7 @@ Setup notes for running ah-mcp in [Hermes Agent](https://hermes-agent.nousresear
 
 | File | What it is |
 |---|---|
+| [`PROGRESS.md`](PROGRESS.md) | Progress log: status, to-dos, decisions, findings |
 | [`config.example.yaml`](config.example.yaml) | `mcp_servers` block for `~/.hermes/config.yaml` |
 | [`skills/ah-meal-bridge/SKILL.md`](skills/ah-meal-bridge/SKILL.md) | Hermes skill: AH receipts → fridge, missing ingredients → AH list, bonus-aware planning |
 | [`skills/ah-meal-bridge/products.template.md`](skills/ah-meal-bridge/products.template.md) | Empty ingredient ↔ AH product table the skill maintains |
